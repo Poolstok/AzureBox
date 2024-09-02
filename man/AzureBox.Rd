@@ -12,7 +12,7 @@ This can be done by using shiny's isolate() function.
 }
 \examples{
 /dontrun{
-  azureBox <- AzureBox$new(tenantID = "your-tenant-id",            # The tenant id of your organization, can be found after registering a new application in Microsoft Azure/Entra
+  azureBox <- AzureBox$new(tenantID = "your-tenant-id",# The tenant id of your organization, can be found after registering a new application in Microsoft Azure/Entra
                appID = "your-app-id",                  # Can be found in Azure/Entra aftering registering a new application
                appSecret = "your-app-secret",          # Create one for your app using Microsoft Azure/Entra
                redirect = "redirect-link-to-your-url") # Must match with the app redirect set in Microsoft Azure/Entra
