@@ -4,7 +4,22 @@
 
 #' @title AzureBox - A Class for Azure Authentication and User Data Retrieval
 #' @description This R6 class facilitates OAuth2.0 authentication against Azure
-#' AD and retrieves user data using the Microsoft Graph API.
+#' AD and retrieves user data using the Microsoft Graph API. The class should be
+#' instantiated in a module that runs at app startup. After object initialization (AzureBox$new()),
+#' run AzureBox$GetToken() with as argument the value of session$clientData$url_search.
+#' This can be done by using shiny's isolate() function.
+#' @examples
+#' /dontrun{
+#'   azureBox <- AzureBox$new(tenantID = "your-tenant-id",            # The tenant id of your organization, can be found after registering a new application in Microsoft Azure/Entra
+#'                appID = "your-app-id",                  # Can be found in Azure/Entra aftering registering a new application
+#'                appSecret = "your-app-secret",          # Create one for your app using Microsoft Azure/Entra
+#'                redirect = "redirect-link-to-your-url") # Must match with the app redirect set in Microsoft Azure/Entra
+#'
+#'  token <- azureBox$GetToken(isolate(session$clientData$url_search)) # Token is also stored internally within the AzureBox class
+#'
+#'  # Internal storage of token within AzureBox makes it possible to retrieve userData after authentication
+#'  userData <- azureBox$GetUserData()
+#' }
 #' @importFrom R6 R6Class
 #' @import httr
 #' @import shinyjs
@@ -29,7 +44,8 @@ AzureBox <- R6Class(
     },
 
     #' @description Retrieve an OAuth2.0 token using the authorization code from the URL.
-    #' @param urlSearch The URL containing the authorization code.
+    #' @param urlSearch The URL containing the authorization code. Can be retrieved using
+    #' `isolate(session$clientData$url_search)`
     #' @return The OAuth2.0 token object.
     GetToken = function(urlSearch)
     {
@@ -48,7 +64,8 @@ AzureBox <- R6Class(
       return(private$token)
     },
 
-    #' @description Retrieve user data from Microsoft Graph API.
+    #' @description Retrieve user data from Microsoft Graph API. Should only be ran
+    #' after getting a token using AzureBox$GetToken().
     #' @return A list containing the user data.
     GetUserData = function()
     {
@@ -71,7 +88,9 @@ AzureBox <- R6Class(
       return(userData)
     },
 
-    #' @description Get the port from the redirect URI.
+    #' @description Get the port from the redirect URI. This can be useful when redirecting
+    #' to a localhost uri (e.g. http//localhost:8000) to set the app to run on the
+    #' same port using options=list(shiny.port = azureBox$GetPort())
     #' @return The port number.
     GetPort = function()
     {

@@ -5,7 +5,23 @@
 \title{AzureBox - A Class for Azure Authentication and User Data Retrieval}
 \description{
 This R6 class facilitates OAuth2.0 authentication against Azure
-AD and retrieves user data using the Microsoft Graph API.
+AD and retrieves user data using the Microsoft Graph API. The class should be
+instantiated in a module that runs at app startup. After object initialization (AzureBox$new()),
+run AzureBox$GetToken() with as argument the value of session$clientData$url_search.
+This can be done by using shiny's isolate() function.
+}
+\examples{
+/dontrun{
+  azureBox <- AzureBox$new(tenantID = "your-tenant-id",            # The tenant id of your organization, can be found after registering a new application in Microsoft Azure/Entra
+               appID = "your-app-id",                  # Can be found in Azure/Entra aftering registering a new application
+               appSecret = "your-app-secret",          # Create one for your app using Microsoft Azure/Entra
+               redirect = "redirect-link-to-your-url") # Must match with the app redirect set in Microsoft Azure/Entra
+
+ token <- azureBox$GetToken(isolate(session$clientData$url_search)) # Token is also stored internally within the AzureBox class
+
+ # Internal storage of token within AzureBox makes it possible to retrieve userData after authentication
+ userData <- azureBox$GetUserData()
+}
 }
 \section{Methods}{
 \subsection{Public methods}{
@@ -52,7 +68,8 @@ Retrieve an OAuth2.0 token using the authorization code from the URL.
 \subsection{Arguments}{
 \if{html}{\out{<div class="arguments">}}
 \describe{
-\item{\code{urlSearch}}{The URL containing the authorization code.}
+\item{\code{urlSearch}}{The URL containing the authorization code. Can be retrieved using
+`isolate(session$clientData$url_search)`}
 }
 \if{html}{\out{</div>}}
 }
@@ -64,7 +81,8 @@ The OAuth2.0 token object.
 \if{html}{\out{<a id="method-AzureBox-GetUserData"></a>}}
 \if{latex}{\out{\hypertarget{method-AzureBox-GetUserData}{}}}
 \subsection{Method \code{GetUserData()}}{
-Retrieve user data from Microsoft Graph API.
+Retrieve user data from Microsoft Graph API. Should only be ran
+after getting a token using AzureBox$GetToken().
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{AzureBox$GetUserData()}\if{html}{\out{</div>}}
 }
@@ -77,7 +95,9 @@ A list containing the user data.
 \if{html}{\out{<a id="method-AzureBox-GetPort"></a>}}
 \if{latex}{\out{\hypertarget{method-AzureBox-GetPort}{}}}
 \subsection{Method \code{GetPort()}}{
-Get the port from the redirect URI.
+Get the port from the redirect URI. This can be useful when redirecting
+to a localhost uri (e.g. http//localhost:8000) to set the app to run on the
+same port using options=list(shiny.port = azureBox$GetPort())
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{AzureBox$GetPort()}\if{html}{\out{</div>}}
 }
