@@ -1,7 +1,7 @@
 Package: AzureBox
 Type: Package
 Title: AzureBox - A plug-and-play package for webapp Azure Authentication and User Data Retrieval
-Version: 0.1.0
+Version: 0.1.1
 Author: Rutger Hertoghe
 Maintainer: Rutger Hertoghe <rutgerh@hotmail.be>
 Description: A package to authenticate against Azure using OAuth2.0 and retrieve user data via Microsoft Graph API.

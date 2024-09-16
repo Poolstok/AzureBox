@@ -41,6 +41,7 @@ AzureBox <- R6Class(
       private$password <- appSecret
       private$redirect <- redirect
       private$port <- private$ParsePort(redirect)
+      private$defaultFieldsToGet <- c("id", "displayName", "mail", "userPrincipalName", "jobTitle", "employeeId", "employeeType", "jobTitle", "photo")
     },
 
     #' @description Retrieve an OAuth2.0 token using the authorization code from the URL.
@@ -64,30 +65,55 @@ AzureBox <- R6Class(
       return(private$token)
     },
 
-    #' @description Retrieve user data from Microsoft Graph API. Should only be ran
-    #' after getting a token using AzureBox$GetToken().
-    #' @return A list containing the user data.
-    GetUserData = function()
-    {
+    #' @description Retrieve user data from Microsoft Graph API.
+    #'   Should only be run after getting a token using AzureBox$GetToken().
+    #' @param select_fields A character vector of fields to retrieve (e.g., c("employeeID", "employeeType")). Defaults to NULL, which retrieves all fields.
+    #' @return A list containing the user data or NULL if the request fails.
+    GetUserData = function(select_fields = private$defaultFieldsToGet) {
+      # Retrieve the token from the private environment
       token <- private$token
-      if(is.null(token)) stop("Unable to retrieve a username due there not being an Azure token found!")
 
-      response <- GET("https://graph.microsoft.com/v1.0/me",
-                      httr::add_headers(
-                        Authorization = paste("Bearer", token$credentials$access_token)
-                      )
-      )
-      if(response$status_code != 200)
-      {
-        private$LogDebug("Could not retrieve user data! Status code:", response$status_code)
-        private$LogDebug("Error details: ", content(response, "text", encoding = "UTF-8"))
-        return()
+      # Check if the token is available
+      if (is.null(token)) {
+        stop("Unable to retrieve a username due to the absence of an Azure token!")
       }
 
+      # Base URL for the Microsoft Graph API endpoint
+      base_url <- "https://graph.microsoft.com/v1.0/me"
+
+      # Initialize query parameters list
+      query_params <- list()
+
+      # If select_fields is provided, add it to the query parameters
+      if (!is.null(select_fields)) {
+        if (is.character(select_fields)) {
+          # Join the fields with commas as required by the $select parameter
+          query_params <- list(`$select` = paste(select_fields, collapse = ","))
+        } else {
+          stop("select_fields must be a character vector of field names.")
+        }
+      }
+
+      # Make the GET request with appropriate headers and query parameters
+      response <- GET(
+        url = base_url,
+        httr::add_headers(
+          Authorization = paste("Bearer", token$credentials$access_token)
+        ),
+        query = query_params
+      )
+
+      # Check if the request was successful
+      if (response$status_code != 200) {
+        private$LogDebug("Could not retrieve user data! Status code:", response$status_code)
+        private$LogDebug("Error details: ", content(response, "text", encoding = "UTF-8"))
+        return(NULL)
+      }
+
+      # Parse and return the user data
       userData <- content(response, "parsed")
       return(userData)
     },
-
     #' @description Get the port from the redirect URI. This can be useful when redirecting
     #' to a localhost uri (e.g. http//localhost:8000) to set the app to run on the
     #' same port using options=list(shiny.port = azureBox$GetPort())
@@ -105,6 +131,7 @@ AzureBox <- R6Class(
     redirect = NULL,
     port = NULL,
     token = NULL,
+    defaultFieldsToGet = NULL,
 
     ParsePort = function(redirect)
     {
@@ -157,6 +184,10 @@ AzureBox <- R6Class(
     LogDebug = function(text, value = "")
     {
       shinyjs::runjs(sprintf(glue("console.log('{text} {value}')")))
+
+      debug_message <- paste(text, value, sep = " ")
+      # Output the message to the console
+      message("[DEBUG] ", debug_message)
     }
   )
 )
