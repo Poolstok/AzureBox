@@ -81,14 +81,21 @@ The OAuth2.0 token object.
 \if{html}{\out{<a id="method-AzureBox-GetUserData"></a>}}
 \if{latex}{\out{\hypertarget{method-AzureBox-GetUserData}{}}}
 \subsection{Method \code{GetUserData()}}{
-Retrieve user data from Microsoft Graph API. Should only be ran
-after getting a token using AzureBox$GetToken().
+Retrieve user data from Microsoft Graph API.
+  Should only be run after getting a token using AzureBox$GetToken().
 \subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{AzureBox$GetUserData()}\if{html}{\out{</div>}}
+\if{html}{\out{<div class="r">}}\preformatted{AzureBox$GetUserData(select_fields = private$defaultFieldsToGet)}\if{html}{\out{</div>}}
 }
 
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{select_fields}}{A character vector of fields to retrieve (e.g., c("employeeID", "employeeType")). Defaults to NULL, which retrieves all fields.}
+}
+\if{html}{\out{</div>}}
+}
 \subsection{Returns}{
-A list containing the user data.
+A list containing the user data or NULL if the request fails.
 }
 }
 \if{html}{\out{<hr>}}
