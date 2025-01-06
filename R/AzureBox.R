@@ -55,7 +55,7 @@ AzureBox <- R6Class(
       query <- parseQueryString(urlSearch)
       if(is.null(query$code))
       {
-        private$RedirectToAzure()
+        self$RedirectToAzure()
         return(NULL)
       }
 
@@ -71,12 +71,23 @@ AzureBox <- R6Class(
       query <- parseQueryString(urlSearch)
       if(is.null(query$code))
       {
-        print("CaptureToken() was ineffective due to no 'code' parameter being found in url.")
-        return()
+        return(NULL)
       }
 
       private$token <- private$RetrieveToken(query$code)
       return(private$token)
+    },
+
+    RedirectToAzure = function()
+    {
+      authenticationURI <- build_authorization_uri(resource = private$resource,
+                                                   tenant = private$tenant,
+                                                   app = private$app,
+                                                   redirect_uri = private$redirect,
+                                                   version = 2)
+      redirectJS <- sprintf("console.log('redirected'); location.replace(\"%s\");", authenticationURI)
+      shinyjs::runjs(redirectJS)
+      return()
     },
 
     #' @description Retrieve user data from Microsoft Graph API.
@@ -152,18 +163,6 @@ AzureBox <- R6Class(
       port <- httr::parse_url(redirect)$port
       if(is.null(port)) return(80)
       return(as.numeric(port))
-    },
-
-    RedirectToAzure = function()
-    {
-      authenticationURI <- build_authorization_uri(resource = private$resource,
-                                                   tenant = private$tenant,
-                                                   app = private$app,
-                                                   redirect_uri = private$redirect,
-                                                   version = 2)
-      redirectJS <- sprintf("console.log('redirected'); location.replace(\"%s\");", authenticationURI)
-      shinyjs::runjs(redirectJS)
-      return()
     },
 
     RetrieveToken = function(code)
