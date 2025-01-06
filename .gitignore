@@ -4,3 +4,4 @@
 .Ruserdata
 testScript/test.R
 .Rprofile
+.Renviron

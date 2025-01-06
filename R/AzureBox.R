@@ -65,6 +65,11 @@ AzureBox <- R6Class(
       return(private$token)
     },
 
+    CaptureToken = function(urlSearch)
+    {
+      query <- parseQueryString(urlSearch)
+    }
+
     #' @description Retrieve user data from Microsoft Graph API.
     #'   Should only be run after getting a token using AzureBox$GetToken().
     #' @param select_fields A character vector of fields to retrieve (e.g., c("employeeID", "employeeType")). Defaults to NULL, which retrieves all fields.
