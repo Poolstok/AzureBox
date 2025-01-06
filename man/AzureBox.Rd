@@ -29,6 +29,7 @@ This can be done by using shiny's isolate() function.
 \item \href{#method-AzureBox-new}{\code{AzureBox$new()}}
 \item \href{#method-AzureBox-GetToken}{\code{AzureBox$GetToken()}}
 \item \href{#method-AzureBox-CaptureToken}{\code{AzureBox$CaptureToken()}}
+\item \href{#method-AzureBox-RedirectToAzure}{\code{AzureBox$RedirectToAzure()}}
 \item \href{#method-AzureBox-GetUserData}{\code{AzureBox$GetUserData()}}
 \item \href{#method-AzureBox-GetPort}{\code{AzureBox$GetPort()}}
 \item \href{#method-AzureBox-clone}{\code{AzureBox$clone()}}
@@ -63,7 +64,7 @@ Initialize the AzureBox class
 \subsection{Method \code{GetToken()}}{
 Retrieve an OAuth2.0 token using the authorization code from the URL.
 \subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{AzureBox$GetToken(urlSearch)}\if{html}{\out{</div>}}
+\if{html}{\out{<div class="r">}}\preformatted{AzureBox$GetToken(urlSearch, allowRedirect = TRUE)}\if{html}{\out{</div>}}
 }
 
 \subsection{Arguments}{
@@ -84,6 +85,15 @@ The OAuth2.0 token object.
 \subsection{Method \code{CaptureToken()}}{
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{AzureBox$CaptureToken(urlSearch)}\if{html}{\out{</div>}}
+}
+
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-AzureBox-RedirectToAzure"></a>}}
+\if{latex}{\out{\hypertarget{method-AzureBox-RedirectToAzure}{}}}
+\subsection{Method \code{RedirectToAzure()}}{
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{AzureBox$RedirectToAzure()}\if{html}{\out{</div>}}
 }
 
 }

@@ -48,14 +48,19 @@ AzureBox <- R6Class(
     #' @param urlSearch The URL containing the authorization code. Can be retrieved using
     #' `isolate(session$clientData$url_search)`
     #' @return The OAuth2.0 token object.
-    GetToken = function(urlSearch)
+    GetToken = function(urlSearch, allowRedirect = TRUE)
     {
       if(!is.null(private$token)) return(private$token)
+      if(allowRedirect == FALSE)
+      {
+        print("No token was found yet and redirects are not allowed. Token is NULL")
+        return(NULL)
+      }
 
       query <- parseQueryString(urlSearch)
       if(is.null(query$code))
       {
-        private$RedirectToAzure()
+        self$RedirectToAzure()
         return(NULL)
       }
 
@@ -71,12 +76,23 @@ AzureBox <- R6Class(
       query <- parseQueryString(urlSearch)
       if(is.null(query$code))
       {
-        print("CaptureToken() was ineffective due to no 'code' parameter being found in url.")
-        return()
+        return(NULL)
       }
 
       private$token <- private$RetrieveToken(query$code)
       return(private$token)
+    },
+
+    RedirectToAzure = function()
+    {
+      authenticationURI <- build_authorization_uri(resource = private$resource,
+                                                   tenant = private$tenant,
+                                                   app = private$app,
+                                                   redirect_uri = private$redirect,
+                                                   version = 2)
+      redirectJS <- sprintf("console.log('redirected'); location.replace(\"%s\");", authenticationURI)
+      shinyjs::runjs(redirectJS)
+      return()
     },
 
     #' @description Retrieve user data from Microsoft Graph API.
@@ -152,18 +168,6 @@ AzureBox <- R6Class(
       port <- httr::parse_url(redirect)$port
       if(is.null(port)) return(80)
       return(as.numeric(port))
-    },
-
-    RedirectToAzure = function()
-    {
-      authenticationURI <- build_authorization_uri(resource = private$resource,
-                                                   tenant = private$tenant,
-                                                   app = private$app,
-                                                   redirect_uri = private$redirect,
-                                                   version = 2)
-      redirectJS <- sprintf("console.log('redirected'); location.replace(\"%s\");", authenticationURI)
-      shinyjs::runjs(redirectJS)
-      return()
     },
 
     RetrieveToken = function(code)
