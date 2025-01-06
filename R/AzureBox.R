@@ -76,7 +76,7 @@ AzureBox <- R6Class(
       }
 
       private$token <- private$RetrieveToken(query$code)
-      return()
+      return(private$token)
     },
 
     #' @description Retrieve user data from Microsoft Graph API.
