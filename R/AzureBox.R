@@ -48,9 +48,14 @@ AzureBox <- R6Class(
     #' @param urlSearch The URL containing the authorization code. Can be retrieved using
     #' `isolate(session$clientData$url_search)`
     #' @return The OAuth2.0 token object.
-    GetToken = function(urlSearch)
+    GetToken = function(urlSearch, allowRedirect = TRUE)
     {
       if(!is.null(private$token)) return(private$token)
+      if(allowRedirect == FALSE)
+      {
+        print("No token was found yet and redirects are not allowed. Token is NULL")
+        return(NULL)
+      }
 
       query <- parseQueryString(urlSearch)
       if(is.null(query$code))
