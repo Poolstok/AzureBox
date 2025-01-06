@@ -1,5 +1,8 @@
 library(shiny)
-library(AzureBox)
+library(httr)
+library(R6)
+library(AzureAuth)
+source("../R/AzureBox.R")
 library(shinyjs)
 
 testUI <- function() {
@@ -32,6 +35,7 @@ testServer <- function(input, output, session)
                                  Sys.getenv("AZURE_CLIENT_ID"),
                                  Sys.getenv("AZURE_CLIENT_SECRET"),
                                  Sys.getenv("REDIRECT"))
+    azureTestBox$CaptureToken(isolate(session$clientData$url_search))
     token <- reactiveVal(azureTestBox$GetToken(isolate(session$clientData$url_search)))
 
     output$data <- renderUI({

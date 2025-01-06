@@ -67,8 +67,17 @@ AzureBox <- R6Class(
 
     CaptureToken = function(urlSearch)
     {
+      private$CleanURL()
       query <- parseQueryString(urlSearch)
-    }
+      if(is.null(query$code))
+      {
+        print("CaptureToken() was ineffective due to no 'code' parameter being found in url.")
+        return()
+      }
+
+      private$token <- private$RetrieveToken(query$code)
+      return()
+    },
 
     #' @description Retrieve user data from Microsoft Graph API.
     #'   Should only be run after getting a token using AzureBox$GetToken().
