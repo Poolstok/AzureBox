@@ -28,6 +28,7 @@ This can be done by using shiny's isolate() function.
 \itemize{
 \item \href{#method-AzureBox-new}{\code{AzureBox$new()}}
 \item \href{#method-AzureBox-GetToken}{\code{AzureBox$GetToken()}}
+\item \href{#method-AzureBox-CaptureToken}{\code{AzureBox$CaptureToken()}}
 \item \href{#method-AzureBox-GetUserData}{\code{AzureBox$GetUserData()}}
 \item \href{#method-AzureBox-GetPort}{\code{AzureBox$GetPort()}}
 \item \href{#method-AzureBox-clone}{\code{AzureBox$clone()}}
@@ -76,6 +77,15 @@ Retrieve an OAuth2.0 token using the authorization code from the URL.
 \subsection{Returns}{
 The OAuth2.0 token object.
 }
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-AzureBox-CaptureToken"></a>}}
+\if{latex}{\out{\hypertarget{method-AzureBox-CaptureToken}{}}}
+\subsection{Method \code{CaptureToken()}}{
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{AzureBox$CaptureToken(urlSearch)}\if{html}{\out{</div>}}
+}
+
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-AzureBox-GetUserData"></a>}}
